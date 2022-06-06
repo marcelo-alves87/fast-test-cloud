@@ -42,6 +42,8 @@ public class ContatoController {
 	@PostMapping(path = "/insert")
 	ResponseEntity<String> insert(@Valid @RequestBody Contato contato) {
 		this.contatoRepository.save(contato);
+		queueMessagingTemplate.send(endPoint,
+				MessageBuilder.withPayload("{ \"email\" : \"" + contato.getEmail() + "\" }").build());
 		return ResponseEntity.ok("200");
 	}
 }
